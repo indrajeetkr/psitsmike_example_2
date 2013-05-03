@@ -35,6 +35,23 @@ io.sockets.on('connection', function (socket) {
 		socket.broadcast.to('room1').emit('updatechat', 'SERVER', username + ' has connected to this room');
 		socket.emit('updaterooms', rooms, 'room1');
 	});
+
+	socket.on('addRoom', function (newroom) {
+		rooms.push(newroom);
+		socket.leave(socket.room);
+		socket.join(newroom);
+		socket.emit('updatechat', 'SERVER', 'you have connected to '+ newroom);
+		// sent message to OLD room
+		socket.broadcast.to(socket.room).emit('updatechat', 'SERVER', socket.username+' has left this room');
+		//socket.broadcast.to(socket.room).emit('updaterooms', rooms, socket.room);
+		// update socket session room title
+		socket.room = newroom;
+		socket.broadcast.to(newroom).emit('updatechat', 'SERVER', socket.username+' has joined this room');
+		for (var i = 0; i < rooms.length; i++) {
+			socket.broadcast.to(rooms[i]).emit('updaterooms', rooms, rooms[i]);
+		};
+		socket.emit('updaterooms', rooms, newroom);
+	});
 	
 	// when the client emits 'sendchat', this listens and executes
 	socket.on('sendchat', function (data) {

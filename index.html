@@ -48,6 +48,10 @@
 				$('#datasend').focus().click();
 			}
 		});
+
+		$('#addRoom').click( function() {
+			socket.emit('addRoom', $('#roomName').val());
+		});
 	});
 
 </script>
@@ -59,4 +63,8 @@
 	<div id="conversation"></div>
 	<input id="data" style="width:200px;" />
 	<input type="button" id="datasend" value="send" />
+</div>
+<div style="float:left;width:300px;height:250px;overflow:scroll-y;padding:10px;">
+	<input id="roomName" style="width:200px;" />
+	<input type="button" id="addRoom" value="newRoom" />
 </div>
